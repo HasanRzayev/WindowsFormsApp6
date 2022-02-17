@@ -47,9 +47,10 @@ namespace WindowsFormsApp6
                     listBox1.Items.Add(new Product(form2.textBox1.Text, form2.textBox2.Text, form2.textBox3.Text));
                 }
             }
-
-            //var humans = JsonConvert.SerializeObject(listBox1.items, Newtonsoft.Json.Formatting.Indented);
-            //File.WriteAllText($"products.json", humans);
+           
+         
+            var humans = JsonConvert.SerializeObject(listBox1.Items, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText("products.json", humans);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -67,23 +68,19 @@ namespace WindowsFormsApp6
                         form2.textBox3.Text = (item as Product).cost;
                     }
                 }
+                
                 if (form2.ShowDialog() == DialogResult.OK)
                 {
+                    Product a = new Product(form2.textBox1.Text, form2.textBox2.Text, form2.textBox3.Text);
+                    int index = listBox1.SelectedIndex;
+                    listBox1.Items.RemoveAt(index);
+                    listBox1.Items.Insert(index,a);
 
-                    foreach (var itemm in listBox1.Items)
-                    {
-                        if (listBox1.SelectedItem == itemm)
-                        {
-                          
-                            (itemm as Product).productname = form2.textBox1.Text;
-                            (itemm as Product).country = form2.textBox2.Text;
-                            (itemm as Product).cost = form2.textBox3.Text;
-                        }
+                 
 
-                    }
 
                 }
-                
+               
             }
             
         }
@@ -98,6 +95,18 @@ namespace WindowsFormsApp6
         private void button4_Click(object sender, EventArgs e)
         {
             listBox1.Items.Clear();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            var products = File.ReadAllText("products.json");
+            List<Product> lazim = new List<Product>();
+            lazim= JsonConvert.DeserializeObject<List<Product>> (products);
+            for (int i = 0; i < lazim.Count; i++)
+            {
+                listBox1.Items.Add(lazim[i]);
+            }
+              
         }
     }
 }
